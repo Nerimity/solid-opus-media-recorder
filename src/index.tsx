@@ -1,26 +1,47 @@
-import { Accessor, Component, createComputed, createSignal } from 'solid-js'
+ 
+import "./init";
 
-export function createHello(): [Accessor<string>, (to: string) => void] {
-  const [hello, setHello] = createSignal('Hello World!')
+import OpusMediaRecorder from 'opus-media-recorder';
 
-  return [hello, (to: string) => setHello(`Hello ${to}!`)]
-}
+// @ts-ignore: Unreachable code error
+import EncoderWorker from 'opus-media-recorder/encoderWorker.umd.js?url';
+// @ts-ignore: Unreachable code error
+import OggOpusWasm from 'opus-media-recorder/OggOpusEncoder.wasm?url';
+// @ts-ignore: Unreachable code error
+import WebMOpusWasm from 'opus-media-recorder/WebMOpusEncoder.wasm?url';
 
-export const Hello: Component<{ to?: string }> = props => {
-  const [hello, setHello] = createHello()
 
-  // Console calls will be removed in production if `dropConsole` is enabled
+const workerOptions = {
+  encoderWorkerFactory: function () {
+    return new Worker(EncoderWorker);
+  },
+  OggOpusEncoderWasmPath: OggOpusWasm,
+  WebMOpusEncoderWasmPath: WebMOpusWasm
+};  
 
-  // eslint-disable-next-line no-console
-  console.log('Hello World!')
+let recorder: MediaRecorder | undefined;
 
-  createComputed(() => {
-    if (typeof props.to === 'string') setHello(props.to)
+export const useMicRecorder = () => {
+  
+  const record = () => new Promise<Blob>(res => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      recorder = new OpusMediaRecorder(stream, { mimeType: 'audio/ogg' }, workerOptions);
+      recorder.start();
+
+      recorder.addEventListener('dataavailable', (e) => {
+        res(e.data)
+      });
+    });
   })
 
-  return (
-    <>
-      <div>{hello()}</div>
-    </>
-  )
+  const stop = () => {
+    recorder?.stop();
+    recorder?.stream.getTracks().forEach(i => i.stop());
+  }
+
+  return {
+    record,
+    stop
+  }
+
 }

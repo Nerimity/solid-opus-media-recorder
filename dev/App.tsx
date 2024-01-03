@@ -1,28 +1,19 @@
-import type { Component } from 'solid-js'
-import logo from './logo.svg'
 import styles from './App.module.css'
-import { Hello } from '../src'
+import { useMicRecorder } from '../src'
 
-const App: Component = () => {
+const App = () => {
+  const {record, stop} = useMicRecorder();
+
+  const onRecordClick = async () => {
+    console.log("recording...")
+    const blob = await record();
+    console.log("recorded", blob)
+  }
+
   return (
     <div class={styles.App}>
-      <header class={styles.header}>
-        <img src={logo} class={styles.logo} alt="logo" />
-        <h1>
-          <Hello></Hello>
-        </h1>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
-          href="https://github.com/solidjs/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
-        </a>
-      </header>
+      <button onClick={onRecordClick}>Record</button>
+      <button onClick={stop}>Stop</button>
     </div>
   )
 }

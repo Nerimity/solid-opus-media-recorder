@@ -1,36 +1,62 @@
 <p>
-  <img width="100%" src="https://assets.solidjs.com/banner?type={{name_of_lib}}&background=tiles&project=%20" alt="{{name_of_lib}}">
+  <img width="100%" src="https://assets.solidjs.com/banner?type=@nerimity/solid-opus-media-recorder&background=tiles&project=%20" alt="@nerimity/solid-opus-media-recorder">
 </p>
 
-# {{name_of_lib}}
+# @nerimity/solid-opus-media-recorder
 
 [![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
 
-{{desc_of_lib}}
+Opus ogg mic recorder to blob
 
-> **Note** After using this template, you have to search and replace all `{{name_of_lib}}` and similar strings
-> with appropriate texts.
->
-> `{{name_of_lib}}` should be a **kebab-case** string representing the name of you monorepo.
->
-> `{{desc_of_lib}}` should be a **Normal case** string with the description of the repository.
->
-> `{{me}}` should be a **kebab-case** string from your profile URL.
 
 ## Quick start
 
 Install it:
 
 ```bash
-npm i {{name_of_lib}}
+npm i @nerimity/solid-opus-media-recorder
 # or
-yarn add {{name_of_lib}}
+yarn add @nerimity/solid-opus-media-recorder
 # or
-pnpm add {{name_of_lib}}
+pnpm add @nerimity/solid-opus-media-recorder
 ```
+
+
+# Important
+Before using this library, make sure to create a seperate `init.ts` file and import it from your main/index.ts.
+```js
+// init.ts
+window.global ||= window;
+
+// index/main.ts
+import './init';
+
+```
+
+
 
 Use it:
 
 ```tsx
-import {{name_of_lib}} from '{{name_of_lib}}'
+import { useMicRecorder } from '@nerimity/solid-opus-media-recorder'
+
+const App = () => {
+  const {record, stop} = useMicRecorder();
+
+  const onRecordClick = async () => {
+    console.log("recording...")
+    const blob = await record();
+    console.log("recorded", blob)
+  }
+
+  return (
+    <div>
+      <button onClick={onRecordClick}>Record</button>
+      <button onClick={stop}>Stop</button>
+    </div>
+  )
+}
+
+export default App
+
 ```
