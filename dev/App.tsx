@@ -2,12 +2,12 @@ import styles from './App.module.css'
 import { useMicRecorder } from '../src'
 
 const App = () => {
-  const {record, stop} = useMicRecorder();
+  const { record, stop } = useMicRecorder()
 
   const onRecordClick = async () => {
-    console.log("recording...")
-    const blob = await record();
-    console.log("recorded", blob)
+    console.log('recording...')
+    const blob = await record()
+    console.log('recorded', blob)
   }
 
   return (

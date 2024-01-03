@@ -1,47 +1,44 @@
- 
-import "./init";
+import './init'
 
-import OpusMediaRecorder from 'opus-media-recorder';
+import OpusMediaRecorder from 'opus-media-recorder'
 
 // @ts-ignore: Unreachable code error
-import EncoderWorker from 'opus-media-recorder/encoderWorker.umd.js?url';
+import EncoderWorker from 'opus-media-recorder/encoderWorker.umd.js?url'
 // @ts-ignore: Unreachable code error
-import OggOpusWasm from 'opus-media-recorder/OggOpusEncoder.wasm?url';
+import OggOpusWasm from 'opus-media-recorder/OggOpusEncoder.wasm?url'
 // @ts-ignore: Unreachable code error
-import WebMOpusWasm from 'opus-media-recorder/WebMOpusEncoder.wasm?url';
-
+import WebMOpusWasm from 'opus-media-recorder/WebMOpusEncoder.wasm?url'
 
 const workerOptions = {
   encoderWorkerFactory: function () {
-    return new Worker(EncoderWorker);
+    return new Worker(EncoderWorker)
   },
   OggOpusEncoderWasmPath: OggOpusWasm,
-  WebMOpusEncoderWasmPath: WebMOpusWasm
-};  
+  WebMOpusEncoderWasmPath: WebMOpusWasm,
+}
 
-let recorder: MediaRecorder | undefined;
+let recorder: MediaRecorder | undefined
 
 export const useMicRecorder = () => {
-  
-  const record = () => new Promise<Blob>(res => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      recorder = new OpusMediaRecorder(stream, { mimeType: 'audio/ogg' }, workerOptions);
-      recorder.start();
+  const record = () =>
+    new Promise<Blob>(res => {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        recorder = new OpusMediaRecorder(stream, { mimeType: 'audio/ogg' }, workerOptions)
+        recorder.start()
 
-      recorder.addEventListener('dataavailable', (e) => {
-        res(e.data)
-      });
-    });
-  })
+        recorder.addEventListener('dataavailable', e => {
+          res(e.data)
+        })
+      })
+    })
 
   const stop = () => {
-    recorder?.stop();
-    recorder?.stream.getTracks().forEach(i => i.stop());
+    recorder?.stop()
+    recorder?.stream.getTracks().forEach(i => i.stop())
   }
 
   return {
     record,
-    stop
+    stop,
   }
-
 }
